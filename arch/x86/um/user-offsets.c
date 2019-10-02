@@ -95,6 +95,8 @@ void foo(void)
 	DEFINE(UM_PROT_WRITE, PROT_WRITE);
 	DEFINE(UM_PROT_EXEC, PROT_EXEC);
 
-	DEFINE(__NR_syscall_max, sizeof(syscalls) - 1);
-	DEFINE(NR_syscalls, sizeof(syscalls));
+	// DEFINE(__NR_syscall_max, sizeof(syscalls) - 1);
+	// DEFINE(NR_syscalls, sizeof(syscalls));
+	DEFINE(__NR_syscall_max, 1023);
+	DEFINE(NR_syscalls, 1023);
 }
