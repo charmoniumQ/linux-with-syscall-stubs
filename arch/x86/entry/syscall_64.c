@@ -27,6 +27,8 @@ asmlinkage const sys_call_ptr_t sys_call_table[__NR_syscall_max+1] = {
 #include <asm/syscalls_64.h>
 };
 
+EXPORT_SYMBOL(sys_call_table);
+
 #undef __SYSCALL_64
 #undef __SYSCALL_X32
 
