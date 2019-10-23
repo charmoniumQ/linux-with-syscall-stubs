@@ -836,7 +836,7 @@ EXPORT_SYMBOL(transfer_args_to_stack);
 
 #endif /* CONFIG_MMU */
 
-static struct file *do_open_execat(int fd, struct filename *name, int flags)
+struct file *do_open_execat(int fd, struct filename *name, int flags)
 {
 	struct file *file;
 	int err;
@@ -1404,7 +1404,7 @@ EXPORT_SYMBOL(finalize_exec);
  * Or, if exec fails before, free_bprm() should release ->cred and
  * and unlock.
  */
-static int prepare_bprm_creds(struct linux_binprm *bprm)
+int prepare_bprm_creds(struct linux_binprm *bprm)
 {
 	if (mutex_lock_interruptible(&current->signal->cred_guard_mutex))
 		return -ERESTARTNOINTR;
