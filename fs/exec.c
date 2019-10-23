@@ -836,7 +836,7 @@ EXPORT_SYMBOL(transfer_args_to_stack);
 
 #endif /* CONFIG_MMU */
 
-static struct file *do_open_execat(int fd, struct filename *name, int flags)
+struct file *do_open_execat(int fd, struct filename *name, int flags)
 {
 	struct file *file;
 	int err;
