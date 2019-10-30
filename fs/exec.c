@@ -356,7 +356,7 @@ static bool valid_arg_len(struct linux_binprm *bprm, long len)
  * flags, permissions, and offset, so we use temporary values.  We'll update
  * them later in setup_arg_pages().
  */
-static int bprm_mm_init(struct linux_binprm *bprm)
+int bprm_mm_init(struct linux_binprm *bprm)
 {
 	int err;
 	struct mm_struct *mm = NULL;
@@ -1417,7 +1417,7 @@ int prepare_bprm_creds(struct linux_binprm *bprm)
 	return -ENOMEM;
 }
 
-static void free_bprm(struct linux_binprm *bprm)
+void free_bprm(struct linux_binprm *bprm)
 {
 	free_arg_pages(bprm);
 	if (bprm->cred) {
@@ -1479,7 +1479,7 @@ EXPORT_SYMBOL(install_exec_creds);
  * - the caller must hold ->cred_guard_mutex to protect against
  *   PTRACE_ATTACH or seccomp thread-sync
  */
-static void check_unsafe_exec(struct linux_binprm *bprm)
+void check_unsafe_exec(struct linux_binprm *bprm)
 {
 	struct task_struct *p = current, *t;
 	unsigned n_fs;
