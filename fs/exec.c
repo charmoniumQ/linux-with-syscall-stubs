@@ -356,7 +356,7 @@ static bool valid_arg_len(struct linux_binprm *bprm, long len)
  * flags, permissions, and offset, so we use temporary values.  We'll update
  * them later in setup_arg_pages().
  */
-static int bprm_mm_init(struct linux_binprm *bprm)
+int bprm_mm_init(struct linux_binprm *bprm)
 {
 	int err;
 	struct mm_struct *mm = NULL;
@@ -385,6 +385,7 @@ err:
 
 	return err;
 }
+EXPORT_SYMBOL(bprm_mm_init);
 
 struct user_arg_ptr {
 #ifdef CONFIG_COMPAT
@@ -879,6 +880,7 @@ exit:
 	fput(file);
 	return ERR_PTR(err);
 }
+EXPORT_SYMBOL(do_open_execat);
 
 struct file *open_exec(const char *name)
 {
@@ -1416,8 +1418,9 @@ int prepare_bprm_creds(struct linux_binprm *bprm)
 	mutex_unlock(&current->signal->cred_guard_mutex);
 	return -ENOMEM;
 }
+EXPORT_SYMBOL(prepare_bprm_creds);
 
-static void free_bprm(struct linux_binprm *bprm)
+void free_bprm(struct linux_binprm *bprm)
 {
 	free_arg_pages(bprm);
 	if (bprm->cred) {
@@ -1433,6 +1436,7 @@ static void free_bprm(struct linux_binprm *bprm)
 		kfree(bprm->interp);
 	kfree(bprm);
 }
+EXPORT_SYMBOL(free_bprm);
 
 int bprm_change_interp(const char *interp, struct linux_binprm *bprm)
 {
@@ -1479,7 +1483,7 @@ EXPORT_SYMBOL(install_exec_creds);
  * - the caller must hold ->cred_guard_mutex to protect against
  *   PTRACE_ATTACH or seccomp thread-sync
  */
-static void check_unsafe_exec(struct linux_binprm *bprm)
+void check_unsafe_exec(struct linux_binprm *bprm)
 {
 	struct task_struct *p = current, *t;
 	unsigned n_fs;
@@ -1510,6 +1514,7 @@ static void check_unsafe_exec(struct linux_binprm *bprm)
 		p->fs->in_exec = 1;
 	spin_unlock(&p->fs->lock);
 }
+EXPORT_SYMBOL(check_unsafe_exec);
 
 static void bprm_fill_uid(struct linux_binprm *bprm)
 {

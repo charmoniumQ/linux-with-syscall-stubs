@@ -3512,6 +3512,7 @@ void sched_exec(void)
 unlock:
 	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
 }
+EXPORT_SYMBOL(sched_exec);
 
 #endif
 

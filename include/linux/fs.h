@@ -40,6 +40,7 @@
 #include <linux/fs_types.h>
 #include <linux/build_bug.h>
 #include <linux/stddef.h>
+#include <linux/binfmts.h>
 
 #include <asm/byteorder.h>
 #include <uapi/linux/fs.h>
@@ -3619,5 +3620,15 @@ static inline int inode_drain_writes(struct inode *inode)
 	inode_dio_wait(inode);
 	return filemap_write_and_wait(inode->i_mapping);
 }
+
+int prepare_bprm_creds(struct linux_binprm *bprm);
+
+void free_bprm(struct linux_binprm *bprm);
+
+void check_unsafe_exec(struct linux_binprm *bprm);
+
+struct file *do_open_execat(int fd, struct filename *name, int flags);
+
+int bprm_mm_init(struct linux_binprm *bprm);
 
 #endif /* _LINUX_FS_H */
