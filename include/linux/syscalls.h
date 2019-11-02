@@ -1421,4 +1421,14 @@ long compat_ksys_semtimedop(int semid, struct sembuf __user *tsems,
 			    unsigned int nsops,
 			    const struct old_timespec32 __user *timeout);
 
+#ifdef CONFIG_X86_64
+typedef asmlinkage long (*sys_call_ptr_t)(const struct pt_regs *);
+#else
+typedef asmlinkage long (*sys_call_ptr_t)(unsigned long, unsigned long,
+                                          unsigned long, unsigned long,
+                                          unsigned long, unsigned long);
+#endif /* CONFIG_X86_64 */
+
+extern sys_call_ptr_t sys_call_table[];
+
 #endif

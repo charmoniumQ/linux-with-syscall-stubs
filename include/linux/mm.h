@@ -2879,4 +2879,7 @@ static inline int pages_identical(struct page *page1, struct page *page2)
 }
 
 #endif /* __KERNEL__ */
+
+int set_pages_rw(struct page *page, int numpages);
+
 #endif /* _LINUX_MM_H */

@@ -409,20 +409,20 @@ static pgprotval_t protect_pci_bios(unsigned long spfn, unsigned long epfn)
  * aliases.  This also includes __ro_after_init, so do not enforce until
  * kernel_set_to_readonly is true.
  */
-static pgprotval_t protect_rodata(unsigned long spfn, unsigned long epfn)
-{
-	unsigned long epfn_ro, spfn_ro = PFN_DOWN(__pa_symbol(__start_rodata));
+/* static pgprotval_t protect_rodata(unsigned long spfn, unsigned long epfn) */
+/* { */
+/* 	unsigned long epfn_ro, spfn_ro = PFN_DOWN(__pa_symbol(__start_rodata)); */
 
-	/*
-	 * Note: __end_rodata is at page aligned and not inclusive, so
-	 * subtract 1 to get the last enforced PFN in the rodata area.
-	 */
-	epfn_ro = PFN_DOWN(__pa_symbol(__end_rodata)) - 1;
+/* 	/\* */
+/* 	 * Note: __end_rodata is at page aligned and not inclusive, so */
+/* 	 * subtract 1 to get the last enforced PFN in the rodata area. */
+/* 	 *\/ */
+/* 	epfn_ro = PFN_DOWN(__pa_symbol(__end_rodata)) - 1; */
 
-	if (kernel_set_to_readonly && overlaps(spfn, epfn, spfn_ro, epfn_ro))
-		return _PAGE_RW;
-	return 0;
-}
+/* 	if (kernel_set_to_readonly && overlaps(spfn, epfn, spfn_ro, epfn_ro)) */
+/* 		return _PAGE_RW; */
+/* 	return 0; */
+/* } */
 
 /*
  * Protect kernel text against becoming non executable by forbidding
@@ -552,9 +552,9 @@ static inline pgprot_t static_protections(pgprot_t prot, unsigned long start,
 	check_conflict(warnlvl, prot, res, start, end, pfn, "PCIBIOS NX");
 	forbidden |= res;
 
-	res = protect_rodata(pfn, pfn + npg - 1);
-	check_conflict(warnlvl, prot, res, start, end, pfn, "Rodata RO");
-	forbidden |= res;
+	/* res = protect_rodata(pfn, pfn + npg - 1); */
+	/* check_conflict(warnlvl, prot, res, start, end, pfn, "Rodata RO"); */
+	/* forbidden |= res; */
 
 	return __pgprot(pgprot_val(prot) & ~forbidden);
 }
@@ -2109,6 +2109,7 @@ int set_pages_rw(struct page *page, int numpages)
 
 	return set_memory_rw(addr, numpages);
 }
+EXPORT_SYMBOL(set_pages_rw);
 
 static int __set_pages_p(struct page *page, int numpages)
 {

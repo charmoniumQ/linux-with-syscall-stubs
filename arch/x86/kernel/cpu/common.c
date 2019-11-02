@@ -371,20 +371,20 @@ static unsigned long cr4_pinned_bits __ro_after_init;
 
 void native_write_cr0(unsigned long val)
 {
-	unsigned long bits_missing = 0;
+	/* unsigned long bits_missing = 0; */
 
-set_register:
+/* set_register: */
 	asm volatile("mov %0,%%cr0": "+r" (val), "+m" (__force_order));
 
-	if (static_branch_likely(&cr_pinning)) {
-		if (unlikely((val & X86_CR0_WP) != X86_CR0_WP)) {
-			bits_missing = X86_CR0_WP;
-			val |= bits_missing;
-			goto set_register;
-		}
-		/* Warn after we've set the missing bits. */
-		WARN_ONCE(bits_missing, "CR0 WP bit went missing!?\n");
-	}
+	/* if (static_branch_likely(&cr_pinning)) { */
+	/* 	if (unlikely((val & X86_CR0_WP) != X86_CR0_WP)) { */
+	/* 		bits_missing = X86_CR0_WP; */
+	/* 		val |= bits_missing; */
+	/* 		goto set_register; */
+	/* 	} */
+	/* 	/\* Warn after we've set the missing bits. *\/ */
+	/* 	WARN_ONCE(bits_missing, "CR0 WP bit went missing!?\n"); */
+	/* } */
 }
 EXPORT_SYMBOL(native_write_cr0);
 
