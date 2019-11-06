@@ -151,6 +151,7 @@ void acct_update_integrals(struct task_struct *tsk)
 	__acct_update_integrals(tsk, utime, stime);
 	local_irq_restore(flags);
 }
+EXPORT_SYMBOL(acct_update_integrals);
 
 /**
  * acct_account_cputime - update mm integral after cputime update

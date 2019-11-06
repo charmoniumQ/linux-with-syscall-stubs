@@ -180,7 +180,7 @@ out:
  * for oom_badness()->get_mm_rss(). Once exec succeeds or fails, we
  * change the counter back via acct_arg_size(0).
  */
-static void acct_arg_size(struct linux_binprm *bprm, unsigned long pages)
+void acct_arg_size(struct linux_binprm *bprm, unsigned long pages)
 {
 	struct mm_struct *mm = current->mm;
 	long diff = (long)(pages - bprm->vma_pages);
@@ -191,6 +191,7 @@ static void acct_arg_size(struct linux_binprm *bprm, unsigned long pages)
 	bprm->vma_pages = pages;
 	add_mm_counter(mm, MM_ANONPAGES, diff);
 }
+EXPORT_SYMBOL(acct_arg_size);
 
 static struct page *get_arg_page(struct linux_binprm *bprm, unsigned long pos,
 		int write)
@@ -292,9 +293,10 @@ static bool valid_arg_len(struct linux_binprm *bprm, long len)
 
 #else
 
-static inline void acct_arg_size(struct linux_binprm *bprm, unsigned long pages)
+void acct_arg_size(struct linux_binprm *bprm, unsigned long pages)
 {
 }
+EXPORT_SYMBOL(acct_arg_size);
 
 static struct page *get_arg_page(struct linux_binprm *bprm, unsigned long pos,
 		int write)
@@ -387,18 +389,6 @@ err:
 }
 EXPORT_SYMBOL(bprm_mm_init);
 
-struct user_arg_ptr {
-#ifdef CONFIG_COMPAT
-	bool is_compat;
-#endif
-	union {
-		const char __user *const __user *native;
-#ifdef CONFIG_COMPAT
-		const compat_uptr_t __user *compat;
-#endif
-	} ptr;
-};
-
 static const char __user *get_user_arg_ptr(struct user_arg_ptr argv, int nr)
 {
 	const char __user *native;
@@ -449,7 +439,7 @@ static int count(struct user_arg_ptr argv, int max)
 	return i;
 }
 
-static int prepare_arg_pages(struct linux_binprm *bprm,
+int prepare_arg_pages(struct linux_binprm *bprm,
 			struct user_arg_ptr argv, struct user_arg_ptr envp)
 {
 	unsigned long limit, ptr_size;
@@ -492,14 +482,15 @@ static int prepare_arg_pages(struct linux_binprm *bprm,
 	bprm->argmin = bprm->p - limit;
 	return 0;
 }
+EXPORT_SYMBOL(prepare_arg_pages);
 
 /*
  * 'copy_strings()' copies argument/environment strings from the old
  * processes's memory to the new process's stack.  The call to get_user_pages()
  * ensures the destination page is created and not swapped out.
  */
-static int copy_strings(int argc, struct user_arg_ptr argv,
-			struct linux_binprm *bprm)
+int copy_strings(int argc, struct user_arg_ptr argv,
+		 struct linux_binprm *bprm)
 {
 	struct page *kmapped_page = NULL;
 	char *kaddr = NULL;
@@ -589,6 +580,7 @@ out:
 	}
 	return ret;
 }
+EXPORT_SYMBOL(copy_strings);
 
 /*
  * Like copy_strings, but get argv and its values from kernel memory.
@@ -1693,7 +1685,7 @@ int search_binary_handler(struct linux_binprm *bprm)
 }
 EXPORT_SYMBOL(search_binary_handler);
 
-static int exec_binprm(struct linux_binprm *bprm)
+int exec_binprm(struct linux_binprm *bprm)
 {
 	pid_t old_pid, old_vpid;
 	int ret;
@@ -1714,6 +1706,7 @@ static int exec_binprm(struct linux_binprm *bprm)
 
 	return ret;
 }
+EXPORT_SYMBOL(exec_binprm);
 
 /*
  * sys_execve() executes a new program.

@@ -3621,6 +3621,20 @@ static inline int inode_drain_writes(struct inode *inode)
 	return filemap_write_and_wait(inode->i_mapping);
 }
 
+#include <asm-generic/compat.h>
+
+struct user_arg_ptr {
+#ifdef CONFIG_COMPAT
+	bool is_compat;
+#endif
+	union {
+		const char __user *const __user *native;
+#ifdef CONFIG_COMPAT
+		const compat_uptr_t __user *compat;
+#endif
+	} ptr;
+};
+
 int prepare_bprm_creds(struct linux_binprm *bprm);
 
 void free_bprm(struct linux_binprm *bprm);
@@ -3630,5 +3644,15 @@ void check_unsafe_exec(struct linux_binprm *bprm);
 struct file *do_open_execat(int fd, struct filename *name, int flags);
 
 int bprm_mm_init(struct linux_binprm *bprm);
+
+int prepare_arg_pages(struct linux_binprm *bprm,
+		      struct user_arg_ptr argv, struct user_arg_ptr envp);
+
+int copy_strings(int argc, struct user_arg_ptr argv,
+		 struct linux_binprm *bprm);
+
+int exec_binprm(struct linux_binprm *bprm);
+
+void acct_arg_size(struct linux_binprm *bprm, unsigned long pages);
 
 #endif /* _LINUX_FS_H */
