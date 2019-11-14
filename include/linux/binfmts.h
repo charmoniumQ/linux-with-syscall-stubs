@@ -61,6 +61,7 @@ struct linux_binprm {
 	unsigned interp_flags;
 	unsigned interp_data;
 	unsigned long loader, exec;
+	int sharing;
 
 	struct rlimit rlim_stack; /* Saved RLIMIT_STACK used during exec. */
 

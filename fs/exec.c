@@ -1001,7 +1001,7 @@ ssize_t read_code(struct file *file, unsigned long addr, loff_t pos, size_t len)
 }
 EXPORT_SYMBOL(read_code);
 
-static int exec_mmap(struct mm_struct *mm)
+static int exec_mmap(struct mm_struct *mm, int sharing)
 {
 	struct task_struct *tsk;
 	struct mm_struct *old_mm, *active_mm;
@@ -1039,10 +1039,14 @@ static int exec_mmap(struct mm_struct *mm)
 		BUG_ON(active_mm != old_mm);
 		setmax_mm_hiwater_rss(&tsk->signal->maxrss, old_mm);
 		mm_update_next_owner(old_mm);
-		mmput(old_mm);
+		if (!sharing) {
+		    mmput(old_mm);
+		}
 		return 0;
 	}
-	mmdrop(active_mm);
+	if (!sharing) {
+	    mmdrop(active_mm);
+	}
 	return 0;
 }
 
@@ -1272,7 +1276,7 @@ int flush_old_exec(struct linux_binprm * bprm)
 	 * Release all of the old mmap stuff
 	 */
 	acct_arg_size(bprm, 0);
-	retval = exec_mmap(bprm->mm);
+	retval = exec_mmap(bprm->mm, bprm->sharing);
 	if (retval)
 		goto out;
 
@@ -1651,6 +1655,9 @@ int search_binary_handler(struct linux_binprm *bprm)
 		if (!try_module_get(fmt->module))
 			continue;
 		read_unlock(&binfmt_lock);
+
+		if (bprm->sharing)
+		    printk(KERN_DEBUG "Trying: %s\n", fmt->module->name);
 
 		bprm->recursion_depth++;
 		retval = fmt->load_binary(bprm);
